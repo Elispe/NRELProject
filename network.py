@@ -8,12 +8,7 @@ Vbase = 230
 omega_syn = 2*np.pi*60
 nb = 39
 ng = 10
-ngA = 3
-ngB = 3
-ngC = 4
-nbA = 13
-nbB = 13
-nbC = 13
+nb_single_area = 13
 
 @dataclass
 class Generator:
@@ -147,4 +142,4 @@ def loadIEEE39bus():
      gen_areaA = create_areaA()
      gen_areaB = create_areaB()
      gen_areaC = create_areaC()
-     return gen,line,trafos,gen_areaA, gen_areaB, gen_areaC, Sbase,ng,nb, ngA, ngB, ngC, nbA, nbB, nbC
+     return gen,line,trafos,gen_areaA, gen_areaB, gen_areaC, Sbase,ng,nb,nb_single_area
