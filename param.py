@@ -1,4 +1,7 @@
 # Parameters of the power system
+# File built out of the Julia code
+# 3 areas, 1 conventional gen per area
+# Gives non-Hurwitz A, I think it is wrong
 from math import pi
 import numpy as np
 from pipenv.cli.command import update
@@ -114,4 +117,13 @@ for i in range(N):
     last_i+=4
 
 # Make A Hurwitz
-A -= 5*np.identity(4*N)
+# A -= 5*np.identity(4*N)
+
+eigval, eigvec = np.linalg.eig(A)
+
+print("Eigenvalues")
+for e in eigval:
+    print(e)
+
+print("Matrix A rank", np.linalg.matrix_rank(A))
+
