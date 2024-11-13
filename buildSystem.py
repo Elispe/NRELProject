@@ -1,6 +1,6 @@
 import numpy as np
 from network import loadIEEE39bus
-from constant import omega_s, ohm_per_km, ZBASE, SBASE
+from constant import omega_s, SBASE
 import os
 
 
@@ -11,9 +11,9 @@ class LTI_system():
         self.D_DERS = D_DERS
         self.Tz = Tz
         self.Sbase = SBASE
-        self.X12 = ohm_per_km * 20 / ZBASE  # X - admittance value
-        self.X13 = ohm_per_km * 100 / ZBASE
-        self.X23 = ohm_per_km * 50 / ZBASE
+        self.X12 = (self.line["Line5"].X * self.line["Line2"].X)/(self.line["Line5"].X + self.line["Line2"].X)
+        self.X13 = self.line["Line21"].X
+        self.X23 =  (self.line["Line8"].X * self.line["Line18"].X)/(self.line["Line8"].X + self.line["Line18"].X)
         self.ngA = len(self.gen_areaA)
         self.ngB = len(self.gen_areaB)
         self.ngC = len(self.gen_areaC)
@@ -63,17 +63,16 @@ class LTI_system():
         # x = [w1,Pm1,Pm8,Pm9,w2,Pm2,Pm3,Pm10,w3,Pm4,Pm5,Pm6,Pm7,Ptie1,Ptie2,Ptie3,z1,z2,z3]
         self.A = np.block([
             [-self.D_netA / self.M_effA, 1 / self.M_effA * np.ones((1, self.ngA)),
-             np.zeros((1, self.ngB + self.ngC + 2)), 1 / self.M_effA, np.zeros((1, 5))],
+             np.zeros((1, self.ngB + self.ngC + 2)), -1 / self.M_effA, np.zeros((1, 5))],
             [-np.linalg.inv(self.TgA) @ self.KpA, -np.linalg.inv(self.TgA), np.zeros((3, self.ngB + self.ngC + 5)),
              np.linalg.inv(self.TgA) @ self.alphaA, np.zeros((3, 2))],
             [np.zeros((1, self.ngA + 1)), -self.D_netB / self.M_effB, 1 / self.M_effB * np.ones((1, self.ngB)),
-             np.zeros((1, self.ngC + 2)),
-             1 / self.M_effB, np.zeros((1, 4))],
+             np.zeros((1, self.ngC + 2)), -1 / self.M_effB, np.zeros((1, 4))],
             [np.zeros((3, self.ngA + 1)), -np.linalg.inv(self.TgB) @ self.KpB, -np.linalg.inv(self.TgB),
              np.zeros((3, self.ngC + 5)),
              np.linalg.inv(self.TgB) @ self.alphaB, np.zeros((3, 1))],
             [np.zeros((1, self.ngA + self.ngB + 2)), -self.D_netC / self.M_effC,
-             1 / self.M_effC * np.ones((1, self.ngC)), np.zeros((1, 2)), 1 / self.M_effC, np.zeros((1, 3))],
+             1 / self.M_effC * np.ones((1, self.ngC)), np.zeros((1, 2)), -1 / self.M_effC, np.zeros((1, 3))],
             [np.zeros((4, self.ngA + self.ngB + 2)), -np.linalg.inv(self.TgC) @ self.KpC, -np.linalg.inv(self.TgC),
              np.zeros((4, 5)),
              np.linalg.inv(self.TgC) @ self.alphaC],

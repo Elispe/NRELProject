@@ -57,28 +57,28 @@ def create_dic_generator():
 
 
 def create_areaA():
-    areaA = {'Gen1': Generator(bus=30, Sgen=1000, H=4.200, D=1.5, Tsm=Tsm, Kg=Kg),
-             'Gen8': Generator(bus=37, Sgen=1000, H=2.430, D=1.5, Tsm=Tsm, Kg=Kg),
-             'Gen9': Generator(bus=38, Sgen=1000, H=3.450, D=1.5, Tsm=Tsm, Kg=Kg),
+    areaA = {'Gen1': Generator(bus=30, Sgen=1000+np.random.choice([100,-100,200,-200]), H=4.200, D=1.5, Tsm=Tsm*np.random.choice([1,0.8,0.7]), Kg=Kg),
+             'Gen8': Generator(bus=37, Sgen=1000+np.random.choice([100,-100,200,-200]), H=2.430, D=1.5, Tsm=Tsm*np.random.choice([1,0.8,0.7]), Kg=Kg),
+             'Gen9': Generator(bus=38, Sgen=1000+np.random.choice([100,-100,200,-200]), H=3.450, D=1.5, Tsm=Tsm*np.random.choice([1,0.8,0.7]), Kg=Kg),
              }
 
     return areaA
 
 
 def create_areaB():
-    areaB = {'Gen2': Generator(bus=31, Sgen=1000, H=3.03, D=1.5, Tsm=Tsm, Kg=Kg),
-             'Gen3': Generator(bus=32, Sgen=1000, H=3.580, D=1.5, Tsm=Tsm, Kg=Kg),
-             'Gen10': Generator(bus=39, Sgen=10000, H=5, D=1.5, Tsm=Tsm, Kg=Kg)
+    areaB = {'Gen2': Generator(bus=31, Sgen=1000+np.random.choice([100,-100,200,-200]), H=3.03, D=1.5, Tsm=Tsm*np.random.choice([1,0.8,0.7]), Kg=Kg),
+             'Gen3': Generator(bus=32, Sgen=1000+np.random.choice([100,-100,200,-200]), H=3.580, D=1.5, Tsm=Tsm*np.random.choice([1,0.8,0.7]), Kg=Kg),
+             'Gen10': Generator(bus=39, Sgen=10000+np.random.choice([100,-100,200,-200]), H=5, D=1.5, Tsm=Tsm*np.random.choice([1,0.8,0.7]), Kg=Kg)
              }
 
     return areaB
 
 
 def create_areaC():
-    areaC = {'Gen4': Generator(bus=33, Sgen=1000, H=2.860, D=1.5, Tsm=Tsm, Kg=Kg),
-             'Gen5': Generator(bus=34, Sgen=600, H=4.333, D=1.5, Tsm=Tsm, Kg=Kg),
-             'Gen6': Generator(bus=35, Sgen=1000, H=3.480, D=1.5, Tsm=Tsm, Kg=Kg),
-             'Gen7': Generator(bus=36, Sgen=1000, H=2.640, D=1.5, Tsm=Tsm, Kg=Kg),
+    areaC = {'Gen4': Generator(bus=33, Sgen=1000+np.random.choice([100,-100,200,-200]), H=2.860, D=1.5, Tsm=Tsm*np.random.choice([1,0.8,0.7]), Kg=Kg),
+             'Gen5': Generator(bus=34, Sgen=600+np.random.choice([100,-100,200,-200]), H=4.333, D=1.5, Tsm=Tsm*np.random.choice([1,0.8,0.7]), Kg=Kg),
+             'Gen6': Generator(bus=35, Sgen=1000+np.random.choice([100,-100,200,-200]), H=3.480, D=1.5, Tsm=Tsm*np.random.choice([1,0.8,0.7]), Kg=Kg),
+             'Gen7': Generator(bus=36, Sgen=1000+np.random.choice([100,-100,200,-200]), H=2.640, D=1.5, Tsm=Tsm*np.random.choice([1,0.8,0.7]), Kg=Kg),
              }
 
     return areaC
