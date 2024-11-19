@@ -21,7 +21,6 @@ class LTI_system():
         self.build_params_mat(self.gen_areaB)
         self.build_params_mat(self.gen_areaC)
         self.build_A_mat()
-        # self.build_B_mat()
 
     def build_params_mat(self, gen_area):
         ng_single_area = len(gen_area)
@@ -59,35 +58,64 @@ class LTI_system():
             self.alphaC = alpha
             self.betaC = self.D_netC + sum(self.KpC)
 
+    # uncomment below to build A NOT full-rank
+    # def build_A_mat(self):
+    #     # x = [w1,Pm1,Pm8,Pm9,w2,Pm2,Pm3,Pm10,w3,Pm4,Pm5,Pm6,Pm7,Ptie1,Ptie2,Ptie3,z1,z2,z3]
+    #     self.A = np.block([
+    #         [-self.D_netA / self.M_effA, 1 / self.M_effA * np.ones((1, self.ngA)),
+    #          np.zeros((1, self.ngB + self.ngC + 2)), -1 / self.M_effA, np.zeros((1, 5))],
+    #         [-np.linalg.inv(self.TgA) @ self.KpA, -np.linalg.inv(self.TgA), np.zeros((3, self.ngB + self.ngC + 5)),
+    #          np.linalg.inv(self.TgA) @ self.alphaA, np.zeros((3, 2))],
+    #         [np.zeros((1, self.ngA + 1)), -self.D_netB / self.M_effB, 1 / self.M_effB * np.ones((1, self.ngB)),
+    #          np.zeros((1, self.ngC + 2)), -1 / self.M_effB, np.zeros((1, 4))],
+    #         [np.zeros((3, self.ngA + 1)), -np.linalg.inv(self.TgB) @ self.KpB, -np.linalg.inv(self.TgB),
+    #          np.zeros((3, self.ngC + 5)),
+    #          np.linalg.inv(self.TgB) @ self.alphaB, np.zeros((3, 1))],
+    #         [np.zeros((1, self.ngA + self.ngB + 2)), -self.D_netC / self.M_effC,
+    #          1 / self.M_effC * np.ones((1, self.ngC)), np.zeros((1, 2)), -1 / self.M_effC, np.zeros((1, 3))],
+    #         [np.zeros((4, self.ngA + self.ngB + 2)), -np.linalg.inv(self.TgC) @ self.KpC, -np.linalg.inv(self.TgC),
+    #          np.zeros((4, 5)),
+    #          np.linalg.inv(self.TgC) @ self.alphaC],
+    #         [omega_s * (1 / self.X12 + 1 / self.X13), np.zeros((1, self.ngA)), -omega_s / self.X12,
+    #          np.zeros((1, self.ngB)), -omega_s / self.X13, np.zeros((1, self.ngC + 6))],
+    #         [-omega_s / self.X12, np.zeros((1, self.ngA)), omega_s * (1 / self.X12 + 1 / self.X23),
+    #          np.zeros((1, self.ngB)), -omega_s / self.X23, np.zeros((1, self.ngC + 6))],
+    #         [-omega_s / self.X13, np.zeros((1, self.ngA)), -omega_s / self.X23, np.zeros((1, self.ngB)),
+    #          omega_s * (1 / self.X13 + 1 / self.X23), np.zeros((1, self.ngC + 6))],
+    #         [-1 / self.Tz * self.betaA, np.zeros((1, self.ng + 2)), -1 / self.Tz, np.zeros((1, 5))],
+    #         [np.zeros((1, self.ngA + 1)), -1 / self.Tz * self.betaB, np.zeros((1, self.ngB + self.ngC + 2)),
+    #          -1 / self.Tz, np.zeros((1, 4))],
+    #         [np.zeros((1, self.ngA + self.ngB + 2)), -1 / self.Tz * self.betaC, np.zeros((1, self.ngC + 2)),
+    #          -1 / self.Tz, np.zeros((1, 3))]
+    #     ])
+
+    # uncomment below to build A full-rank
     def build_A_mat(self):
-        # x = [w1,Pm1,Pm8,Pm9,w2,Pm2,Pm3,Pm10,w3,Pm4,Pm5,Pm6,Pm7,Ptie1,Ptie2,Ptie3,z1,z2,z3]
+            # x = [w1,Pm1,Pm8,Pm9,w2,Pm2,Pm3,Pm10,w3,Pm4,Pm5,Pm6,Pm7,Ptie1,Ptie2,z1,z2,z3]
         self.A = np.block([
-            [-self.D_netA / self.M_effA, 1 / self.M_effA * np.ones((1, self.ngA)),
-             np.zeros((1, self.ngB + self.ngC + 2)), -1 / self.M_effA, np.zeros((1, 5))],
-            [-np.linalg.inv(self.TgA) @ self.KpA, -np.linalg.inv(self.TgA), np.zeros((3, self.ngB + self.ngC + 5)),
-             np.linalg.inv(self.TgA) @ self.alphaA, np.zeros((3, 2))],
-            [np.zeros((1, self.ngA + 1)), -self.D_netB / self.M_effB, 1 / self.M_effB * np.ones((1, self.ngB)),
-             np.zeros((1, self.ngC + 2)), -1 / self.M_effB, np.zeros((1, 4))],
-            [np.zeros((3, self.ngA + 1)), -np.linalg.inv(self.TgB) @ self.KpB, -np.linalg.inv(self.TgB),
-             np.zeros((3, self.ngC + 5)),
-             np.linalg.inv(self.TgB) @ self.alphaB, np.zeros((3, 1))],
-            [np.zeros((1, self.ngA + self.ngB + 2)), -self.D_netC / self.M_effC,
-             1 / self.M_effC * np.ones((1, self.ngC)), np.zeros((1, 2)), -1 / self.M_effC, np.zeros((1, 3))],
-            [np.zeros((4, self.ngA + self.ngB + 2)), -np.linalg.inv(self.TgC) @ self.KpC, -np.linalg.inv(self.TgC),
-             np.zeros((4, 5)),
-             np.linalg.inv(self.TgC) @ self.alphaC],
-            [omega_s * (1 / self.X12 + 1 / self.X13), np.zeros((1, self.ngA)), -omega_s / self.X12,
-             np.zeros((1, self.ngB)), -omega_s / self.X13, np.zeros((1, self.ngC + 6))],
-            [-omega_s / self.X12, np.zeros((1, self.ngA)), omega_s * (1 / self.X12 + 1 / self.X23),
-             np.zeros((1, self.ngB)), -omega_s / self.X23, np.zeros((1, self.ngC + 6))],
-            [-omega_s / self.X13, np.zeros((1, self.ngA)), -omega_s / self.X23, np.zeros((1, self.ngB)),
-             omega_s * (1 / self.X13 + 1 / self.X23), np.zeros((1, self.ngC + 6))],
-            [-1 / self.Tz * self.betaA, np.zeros((1, self.ng + 2)), -1 / self.Tz, np.zeros((1, 5))],
-            [np.zeros((1, self.ngA + 1)), -1 / self.Tz * self.betaB, np.zeros((1, self.ngB + self.ngC + 2)),
-             -1 / self.Tz, np.zeros((1, 4))],
-            [np.zeros((1, self.ngA + self.ngB + 2)), -1 / self.Tz * self.betaC, np.zeros((1, self.ngC + 2)),
-             -1 / self.Tz, np.zeros((1, 3))]
-        ])
+                [-self.D_netA / self.M_effA, 1 / self.M_effA * np.ones((1, self.ngA)),
+                 np.zeros((1, self.ngB + self.ngC + 2)), -1 / self.M_effA, np.zeros((1, 4))],
+                [-np.linalg.inv(self.TgA) @ self.KpA, -np.linalg.inv(self.TgA), np.zeros((3, self.ngB + self.ngC + 4)),
+                 np.linalg.inv(self.TgA) @ self.alphaA, np.zeros((3, 2))],
+                [np.zeros((1, self.ngA + 1)), -self.D_netB / self.M_effB, 1 / self.M_effB * np.ones((1, self.ngB)),
+                 np.zeros((1, self.ngC + 2)), -1 / self.M_effB, np.zeros((1, 3))],
+                [np.zeros((3, self.ngA + 1)), -np.linalg.inv(self.TgB) @ self.KpB, -np.linalg.inv(self.TgB),
+                 np.zeros((3, self.ngC + 4)),
+                 np.linalg.inv(self.TgB) @ self.alphaB, np.zeros((3, 1))],
+                [np.zeros((1, self.ngA + self.ngB + 2)), -self.D_netC / self.M_effC,
+                 1 / self.M_effC * np.ones((1, self.ngC)), 1 / self.M_effC, 1 / self.M_effC, np.zeros((1, 3))],
+                [np.zeros((4, self.ngA + self.ngB + 2)), -np.linalg.inv(self.TgC) @ self.KpC, -np.linalg.inv(self.TgC),
+                 np.zeros((4, 4)),
+                 np.linalg.inv(self.TgC) @ self.alphaC],
+                [omega_s * (1 / self.X12 + 1 / self.X13), np.zeros((1, self.ngA)), -omega_s / self.X12,
+                 np.zeros((1, self.ngB)), -omega_s / self.X13, np.zeros((1, self.ngC + 5))],
+                [-omega_s / self.X12, np.zeros((1, self.ngA)), omega_s * (1 / self.X12 + 1 / self.X23),
+                 np.zeros((1, self.ngB)), -omega_s / self.X23, np.zeros((1, self.ngC + 5))],
+                [-1 / self.Tz * self.betaA, np.zeros((1, self.ng + 2)), -1 / self.Tz, np.zeros((1, 4))],
+                [np.zeros((1, self.ngA + 1)), -1 / self.Tz * self.betaB, np.zeros((1, self.ngB + self.ngC + 2)),
+                 -1 / self.Tz, np.zeros((1, 3))],
+                [np.zeros((1, self.ngA + self.ngB + 2)), -1 / self.Tz * self.betaC, np.zeros((1, self.ngC )), 1 / self.Tz, 1 / self.Tz,np.zeros((1, 3))]
+            ])
 
         self.eig, _ = np.linalg.eig(self.A)
         if np.array([e < 0 for e in np.real(self.eig)]).all():
@@ -103,10 +131,6 @@ class LTI_system():
         # save matrix A
         if not os.path.exists('matrixA'):
             os.makedirs('matrixA')
-            np.savetxt('matrixA//A.txt', self.A)
+        np.savetxt('matrixA//A.txt', self.A)
 
-    # def build_B_mat(self):
-    #     self.B = np.block([[np.block([-1 / self.M_eff, np.zeros((1, self.ng))])],
-    #                        [np.block([np.zeros((self.ng, 1)), np.linalg.inv(self.Tg) @ (
-    #                                    np.eye(self.ng) - self.alpha * np.ones((1, self.ng)))])],
-    #                        [np.block([np.zeros((1, 1 + self.ng))])]])
+
